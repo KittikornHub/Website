@@ -3,14 +3,19 @@ const navLinks = document.querySelector(".nav-links");
 const navItems = document.querySelectorAll(".nav-links a");
 const sections = document.querySelectorAll("main section[id]");
 const year = document.querySelector("#year");
-const lastUpdated = document.querySelector("#last-updated");
+
+const closeMenu = () => {
+  if (!navLinks || !menuToggle) {
+    return;
+  }
+
+  navLinks.classList.remove("open");
+  document.body.classList.remove("menu-open");
+  menuToggle.setAttribute("aria-expanded", "false");
+};
 
 if (year) {
   year.textContent = new Date().getFullYear();
-}
-
-if (lastUpdated) {
-  lastUpdated.textContent = "Coming soon";
 }
 
 if (menuToggle && navLinks) {
@@ -22,13 +27,20 @@ if (menuToggle && navLinks) {
 }
 
 navItems.forEach((link) => {
-  link.addEventListener("click", () => {
-    navLinks.classList.remove("open");
-    document.body.classList.remove("menu-open");
-    if (menuToggle) {
-      menuToggle.setAttribute("aria-expanded", "false");
-    }
-  });
+  link.addEventListener("click", closeMenu);
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") {
+    closeMenu();
+    menuToggle?.focus();
+  }
+});
+
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 1040) {
+    closeMenu();
+  }
 });
 
 const observer = new IntersectionObserver(
